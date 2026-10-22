@@ -1,11 +1,13 @@
+import { Link } from "react-router-dom";
+
 export default function About() {
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="flex items-center justify-between border-b border-gray-300 bg-white px-6 py-4">
         <h1 className="text-3xl font-bold">About MARTA</h1>
-        <a href="/" className="rounded bg-gray-800 px-4 py-2 text-white hover:bg-gray-700">
+        <Link to="/" className="rounded bg-gray-800 px-4 py-2 text-white hover:bg-gray-700">
           Back to Home
-        </a>
+        </Link>
       </header>
 
       <main className="mx-auto max-w-3xl p-6">

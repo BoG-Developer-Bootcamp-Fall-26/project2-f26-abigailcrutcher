@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import FilterButtons from "../components/FilterButtons";
 import NavBar from "../components/NavBar";
 import TrainList from "../components/TrainList";
@@ -12,8 +13,15 @@ const lineButtonStyles: Record<LineColor, string> = {
   blue: "bg-blue-600 text-white",
 };
 
+function isLineColor(value: string | undefined): value is LineColor {
+  return LINE_COLORS.includes(value as LineColor);
+}
+
 export default function LinesPage() {
-  const [currColor, setCurrColor] = useState<LineColor>("gold");
+  const params = useParams();
+  const startingColor = isLineColor(params.color) ? params.color : "gold";
+
+  const [currColor, setCurrColor] = useState<LineColor>(startingColor);
   const [loading, setLoading] = useState(true);
   const [trainData, setTrainData] = useState<TrainData[] | null>(null);
   const [stationData, setStationData] = useState<string[]>([]);
@@ -50,7 +58,12 @@ export default function LinesPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="mb-4 text-3xl font-bold capitalize">{currColor} Line</h1>
+      <div className="mb-4 flex items-center justify-between">
+        <h1 className="text-3xl font-bold capitalize">{currColor} Line</h1>
+        <Link to="/" className="text-gray-700 hover:underline">
+          Home
+        </Link>
+      </div>
 
       <div className="mb-4 flex flex-wrap gap-2">
         {LINE_COLORS.map((color) => (
