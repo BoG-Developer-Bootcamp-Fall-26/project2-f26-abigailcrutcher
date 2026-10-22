@@ -30,7 +30,9 @@ export default function NavBar({ color, data, selectedStation, onSelectStation }
           key={station}
           onClick={() => handleClick(station)}
           className={`rounded-full px-3 py-1 text-sm ${
-            station === selectedStation ? activeStyles[color] : "bg-white text-gray-700 hover:bg-gray-200"
+            station === selectedStation
+              ? activeStyles[color]
+              : "bg-white text-gray-700 hover:bg-gray-200"
           }`}
         >
           {station}

@@ -13,7 +13,11 @@ function getFilterNames(color: LineColor): string[] {
   return ["Arriving", "Scheduled", "Northbound", "Southbound"];
 }
 
-export default function FilterButtons({ color, activeFilters, onToggleFilter }: FilterButtonsProps) {
+export default function FilterButtons({
+  color,
+  activeFilters,
+  onToggleFilter,
+}: FilterButtonsProps) {
   const filterNames = getFilterNames(color);
 
   return (

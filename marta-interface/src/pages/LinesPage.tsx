@@ -44,64 +44,93 @@ export default function LinesPage() {
   }
 
   useEffect(() => {
+    let ignore = false;
+
     fetch(`${API_URL}/arrivals/${currColor}`)
       .then((response) => response.json())
       .then((data) => {
-        setTrainData(data);
-        setLoading(false);
+        if (!ignore) {
+          setTrainData(data);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!ignore) {
+          setTrainData([]);
+          setLoading(false);
+        }
       });
 
     fetch(`${API_URL}/stations/${currColor}`)
       .then((response) => response.json())
-      .then((data) => setStationData(data));
+      .then((data) => {
+        if (!ignore) {
+          setStationData(data);
+        }
+      })
+      .catch(() => {
+        if (!ignore) {
+          setStationData([]);
+        }
+      });
+
+    return () => {
+      ignore = true;
+    };
   }, [currColor]);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-3xl font-bold capitalize">{currColor} Line</h1>
-        <Link to="/" className="text-gray-700 hover:underline">
-          Home
-        </Link>
-      </div>
+    <div className="min-h-screen bg-gray-100 p-4 sm:p-6">
+      <div className="mx-auto max-w-3xl">
+        <div className="mb-4 flex items-center justify-between">
+          <h1 className="text-2xl font-bold capitalize sm:text-3xl">{currColor} Line</h1>
+          <Link to="/" className="text-gray-700 hover:underline">
+            Home
+          </Link>
+        </div>
 
-      <div className="mb-4 flex flex-wrap gap-2">
-        {LINE_COLORS.map((color) => (
-          <button
-            key={color}
-            onClick={() => changeLine(color)}
-            className={`rounded px-4 py-2 font-semibold capitalize ${lineButtonStyles[color]} ${
-              color === currColor ? "ring-2 ring-black" : "opacity-70"
-            }`}
-          >
-            {color}
-          </button>
-        ))}
-      </div>
+        <div className="mb-4 flex flex-wrap gap-2">
+          {LINE_COLORS.map((color) => (
+            <button
+              key={color}
+              onClick={() => changeLine(color)}
+              className={`rounded px-4 py-2 font-semibold capitalize ${lineButtonStyles[color]} ${
+                color === currColor ? "ring-2 ring-black" : "opacity-70"
+              }`}
+            >
+              {color}
+            </button>
+          ))}
+        </div>
 
-      <div className="mb-4">
-        <NavBar
-          color={currColor}
-          data={stationData}
-          selectedStation={selectedStation}
-          onSelectStation={setSelectedStation}
-        />
-      </div>
+        <div className="mb-4">
+          <NavBar
+            color={currColor}
+            data={stationData}
+            selectedStation={selectedStation}
+            onSelectStation={setSelectedStation}
+          />
+        </div>
 
-      <div className="mb-6">
-        <FilterButtons color={currColor} activeFilters={activeFilters} onToggleFilter={toggleFilter} />
-      </div>
+        <div className="mb-6">
+          <FilterButtons
+            color={currColor}
+            activeFilters={activeFilters}
+            onToggleFilter={toggleFilter}
+          />
+        </div>
 
-      {loading || trainData === null ? (
-        <p className="text-gray-500">Loading trains...</p>
-      ) : (
-        <TrainList
-          color={currColor}
-          data={trainData}
-          station={selectedStation}
-          filters={activeFilters}
-        />
-      )}
+        {loading || trainData === null ? (
+          <p className="text-gray-500">Loading trains...</p>
+        ) : (
+          <TrainList
+            color={currColor}
+            data={trainData}
+            station={selectedStation}
+            filters={activeFilters}
+          />
+        )}
+      </div>
     </div>
   );
 }
