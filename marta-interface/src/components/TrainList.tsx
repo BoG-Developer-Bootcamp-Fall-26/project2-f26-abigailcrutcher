@@ -5,14 +5,39 @@ type TrainListProps = {
   color: LineColor;
   data: TrainData[];
   station: string | null;
+  filters: string[];
 };
 
-export default function TrainList({ color, data, station }: TrainListProps) {
+function matchesFilter(train: TrainData, filter: string): boolean {
+  if (filter === "Arriving") {
+    return train.WAITING_TIME === "Arriving";
+  }
+  if (filter === "Scheduled") {
+    return train.WAITING_TIME !== "Arriving";
+  }
+  if (filter === "Northbound") {
+    return train.DIRECTION === "N";
+  }
+  if (filter === "Southbound") {
+    return train.DIRECTION === "S";
+  }
+  if (filter === "Eastbound") {
+    return train.DIRECTION === "E";
+  }
+  if (filter === "Westbound") {
+    return train.DIRECTION === "W";
+  }
+  return true;
+}
+
+export default function TrainList({ color, data, station, filters }: TrainListProps) {
   let trains = data.filter((train) => train.LINE === color.toUpperCase());
 
   if (station !== null) {
     trains = trains.filter((train) => train.STATION === station.toUpperCase());
   }
+
+  trains = trains.filter((train) => filters.every((filter) => matchesFilter(train, filter)));
 
   if (trains.length === 0) {
     return (

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import FilterButtons from "../components/FilterButtons";
 import NavBar from "../components/NavBar";
 import TrainList from "../components/TrainList";
 import { API_URL, LINE_COLORS } from "../types";
@@ -17,11 +18,21 @@ export default function LinesPage() {
   const [trainData, setTrainData] = useState<TrainData[] | null>(null);
   const [stationData, setStationData] = useState<string[]>([]);
   const [selectedStation, setSelectedStation] = useState<string | null>(null);
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
 
   function changeLine(color: LineColor) {
     setCurrColor(color);
     setSelectedStation(null);
+    setActiveFilters([]);
     setLoading(true);
+  }
+
+  function toggleFilter(filter: string) {
+    if (activeFilters.includes(filter)) {
+      setActiveFilters(activeFilters.filter((name) => name !== filter));
+    } else {
+      setActiveFilters([...activeFilters, filter]);
+    }
   }
 
   useEffect(() => {
@@ -55,7 +66,7 @@ export default function LinesPage() {
         ))}
       </div>
 
-      <div className="mb-6">
+      <div className="mb-4">
         <NavBar
           color={currColor}
           data={stationData}
@@ -64,10 +75,19 @@ export default function LinesPage() {
         />
       </div>
 
+      <div className="mb-6">
+        <FilterButtons color={currColor} activeFilters={activeFilters} onToggleFilter={toggleFilter} />
+      </div>
+
       {loading || trainData === null ? (
         <p className="text-gray-500">Loading trains...</p>
       ) : (
-        <TrainList color={currColor} data={trainData} station={selectedStation} />
+        <TrainList
+          color={currColor}
+          data={trainData}
+          station={selectedStation}
+          filters={activeFilters}
+        />
       )}
     </div>
   );
