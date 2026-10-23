@@ -3,6 +3,7 @@ import type { LineColor } from "../types";
 type NavBarProps = {
   color: LineColor;
   data: string[];
+
   selectedStation: string | null;
   onSelectStation: (station: string | null) => void;
 };
